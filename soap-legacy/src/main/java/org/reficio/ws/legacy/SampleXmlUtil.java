@@ -81,7 +81,7 @@ class SampleXmlUtil {
 
     public SampleXmlUtil(boolean soapEnc, SoapContext context) {
         this.soapEnc = soapEnc;
-        excludedTypes.addAll(context.getExcludedTypes());
+        excludedTypes.addAll(SchemaUtils.getExcludedTypes());
         this.exampleContent = context.isExampleContent();
         this.typeComment = context.isTypeComments();
         this.skipComments = !context.isValueComments();
