@@ -532,4 +532,15 @@ class SchemaUtils {
         }
     }
 
+    /**
+     * 
+     * ignore some attributes
+     * @return
+     */
+    public static Collection<QName> getExcludedTypes() {
+        List<QName> result = new ArrayList<QName>();
+        result.add(new QName("http://www.w3.org/2001/XMLSchema", "schema"));
+        return result;
+    }
+
 }
