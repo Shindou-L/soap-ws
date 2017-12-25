@@ -902,7 +902,9 @@ class SampleXmlUtil {
     private void processParticle(SchemaParticle sp, XmlCursor xmlc, boolean mixed) {
         int loop = determineMinMaxForSample(sp, xmlc);
 
-        while (loop-- > 0) {
+        //just generate once even minOccurs>1
+        if(loop > 0){
+        //while (loop-- > 0) {
             switch (sp.getParticleType()) {
                 case (SchemaParticle.ELEMENT):
                     processElement(sp, xmlc, mixed);
@@ -1000,6 +1002,32 @@ class SampleXmlUtil {
 
         xmlc.toPrevToken();
         // -> <elem>stuff^</elem>
+        //add some attribute start
+        xmlc.insertAttributeWithValue("minOccurs", String.valueOf(sp.getIntMinOccurs()));
+        xmlc.insertAttributeWithValue("maxOccurs", String.valueOf(sp.getIntMaxOccurs()));
+        xmlc.insertAttributeWithValue("nillable", String.valueOf(sp.isNillable()));
+        SchemaType type = element.getType();
+        if (type != null && type.isSimpleType()) {
+            String info = "";
+            XmlAnySimpleType[] values = type.getEnumerationValues();
+            if (values != null && values.length > 0) {
+                info = " - enumeration: [";
+                for (int c = 0; c < values.length; c++) {
+                    if (c > 0) {
+                        info += ",";
+                    }
+                    info += values[c].getStringValue();
+                }
+                info += "]";
+            }
+
+            if (type.isAnonymousType()) {
+                xmlc.insertAttributeWithValue("type", info);
+            } else {
+                xmlc.insertAttributeWithValue("type", type.getName().getLocalPart() + info);
+            }
+        }
+        //add some attribute end
 
         String[] values = null;
         if (multiValuesProvider != null)
